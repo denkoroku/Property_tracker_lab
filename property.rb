@@ -34,11 +34,33 @@ attr_reader :id
     return properties.map { |property| Property.new(property) }
   end
 
-  def Property.find(id)
+  def Property.find_by_id(id)
     db = PG.connect({dbname: 'properties', host: 'localhost'})
     sql = "SELECT * FROM properties WHERE id = $1"
     db.prepare("find", sql)
     values = [id]
+    properties = db.exec_prepared("find", values)
+    db.close
+    return Property.new(properties[0])
+  end
+
+  def Property.find_by_address(address)
+    address = "%#{address}%"
+    db = PG.connect({dbname: 'properties', host: 'localhost'})
+    sql = "SELECT * FROM properties WHERE address LIKE $1"
+    db.prepare("find", sql)
+    values = [address]
+    property = db.exec_prepared("find", values)
+    db.close
+    return property.map { |property| Property.new(property) }
+  end
+
+# FIND by exact address
+  def Property.find_by_exact_address(address)
+    db = PG.connect({dbname: 'properties', host: 'localhost'})
+    sql = "SELECT * FROM properties WHERE address = $1"
+    db.prepare("find", sql)
+    values = [address]
     property = db.exec_prepared("find", values)
     db.close
     return property.map { |property| Property.new(property) }

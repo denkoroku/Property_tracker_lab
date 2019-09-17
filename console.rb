@@ -27,6 +27,8 @@ property2.value = 4000
 property2.update
 
 all_properties = Property.all
-found_property = Property.find(1)
-p found_property
+found_property_id = Property.find_by_id(28)
+found_property_address = Property.find_by_address(12)
+# p found_property_id
+p found_property_address
 # property2.delete
